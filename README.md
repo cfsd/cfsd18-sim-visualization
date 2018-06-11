@@ -1,7 +1,7 @@
 # cfsd18-sim-visualization
+For webbrowser visualization of cfsd vehicle
 
 Build and create local image:
-
 docker build -f Dockerfile.amd64 -t imagename:version .
 
 ## License
