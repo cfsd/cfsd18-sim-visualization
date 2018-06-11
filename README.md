@@ -1,8 +1,8 @@
-# opendlv-ui-default
+# cfsd18-sim-visualization
 
-Build with:
+Build and create local image:
 
-docker build -t opendlv-ui-default:v0.0.1 .
+docker build -f Dockerfile.amd64 -t imagename:version .
 
 ## License
 This project is released under the terms of the GNU GPLv3 License - [![License: GPLv3](https://img.shields.io/badge/license-GPL--3-blue.svg
