@@ -32,7 +32,7 @@ function setupSimulationView() {
     return xmlHttp.responseText;
   }
 
-var map = getResourceFrom("trackTest2R.csv");
+var map = getResourceFrom("mapfiles/trackFSGb.csv");
 map.trim().split("\n").forEach(function(wall) {
   const wallArray = wall.trim().split(",");
   if (wallArray.length == 3) {
@@ -225,7 +225,7 @@ function addSimulationViewData(data) {
       context.beginPath();
       if(type == 1){
         context.fillStyle = "#003cb3";
-        coneSize = 6;//0.22*g_scale;
+        coneSize = 6;//0.22*g_scale; //Uncomment for correct cone scaling
       }
       if(type == 2){
         context.fillStyle = "#ffbf00";
