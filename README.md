@@ -1,5 +1,5 @@
 # cfsd18-sim-visualization
-[![Build Status](https://travis-ci.org/cfsd/cfsd18-sim-visualization.svg?branch=pre-release)](https://travis-ci.org/cfsd/cfsd18-sim-visualization)
+[![Build Status](https://travis-ci.org/cfsd/cfsd18-sim-visualization.svg?branch=master)](https://travis-ci.org/cfsd/cfsd18-sim-visualization)
 For webbrowser visualization of cfsd vehicle
 
 Build and create local image:
