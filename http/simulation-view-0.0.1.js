@@ -112,7 +112,66 @@ var distanceToAimPoint = 0;
 var Ay =0;
 var yawRateDot =0;
 var yawRate =0;
+var a0 = 0;
+var a1 = 0;
+var a2 = 0;
+var a3 = 0;
+var a4 = 0;
+var a5 = 0;
+var a6 = 0;
+var a7 = 0;
+var a8 = 0;
+var a9 = 0;
+var a10 = 0;
+var a11 = 0;
+var a12 = 0;
+var a13 = 0;
+var a14 = 0;
+var a15 = 0;
+var xmin1 = 0;
+var xmin2 = -5;
+var xmin3 = -5;
+var xmin4 = -5;
+var xmax = 5;
+var pathx1 =0;
+var pathy1 =0;
+var pathx2 =0;
+var pathy2 =0;
 function addSimulationViewData(data) {
+  if (data.dataType == 1022 && data.senderStamp == 11){ //For plotting polynomial
+    a1 = data["opendlv_body_ActuatorInfo"]["x"];
+    a2 = data["opendlv_body_ActuatorInfo"]["y"];
+    a3 = data["opendlv_body_ActuatorInfo"]["z"];
+    a0 = data["opendlv_body_ActuatorInfo"]["minValue"];
+    xmin1 = data["opendlv_body_ActuatorInfo"]["maxValue"];
+  }
+  if (data.dataType == 1022 && data.senderStamp == 22){
+    a5 = data["opendlv_body_ActuatorInfo"]["x"];
+    a6 = data["opendlv_body_ActuatorInfo"]["y"];
+    a7 = data["opendlv_body_ActuatorInfo"]["z"];
+    a4 = data["opendlv_body_ActuatorInfo"]["minValue"];
+    xmin2 = data["opendlv_body_ActuatorInfo"]["maxValue"];
+  }
+  if (data.dataType == 1022 && data.senderStamp == 33){
+    a9 = data["opendlv_body_ActuatorInfo"]["x"];
+    a10 = data["opendlv_body_ActuatorInfo"]["y"];
+    a11 = data["opendlv_body_ActuatorInfo"]["z"];
+    a8 = data["opendlv_body_ActuatorInfo"]["minValue"];
+    xmin3 = data["opendlv_body_ActuatorInfo"]["maxValue"];
+  }
+  if (data.dataType == 1022 && data.senderStamp == 44){
+    a13 = data["opendlv_body_ActuatorInfo"]["x"];
+    a14 = data["opendlv_body_ActuatorInfo"]["y"];
+    a15 = data["opendlv_body_ActuatorInfo"]["z"];
+    a12 = data["opendlv_body_ActuatorInfo"]["minValue"];
+    xmin4 = data["opendlv_body_ActuatorInfo"]["maxValue"];
+  }
+  if (data.dataType == 1022 && data.senderStamp == 55){ //Plot end path
+    pathx1 = data["opendlv_body_ActuatorInfo"]["x"];
+    pathy1 = data["opendlv_body_ActuatorInfo"]["y"];
+    pathx2 = data["opendlv_body_ActuatorInfo"]["z"];
+    pathy2 = data["opendlv_body_ActuatorInfo"]["minValue"];
+  }
   if (data.dataType == 1172){
     headingRequest = data["opendlv_logic_action_AimPoint"]["azimuthAngle"];
     distanceToAimPoint = data["opendlv_logic_action_AimPoint"]["distance"];
@@ -183,12 +242,66 @@ function addSimulationViewData(data) {
     context.moveTo(0.765*g_scale,0);
     context.lineTo(H*Math.cos(-headingRequest),H*Math.sin(-headingRequest));
     //####################
+    // DRAW Polyfit
+    var xx=xmin1;
+    var yy;
+    var step = 0.5;
+    do {
+    xx+=step;
+    yy=a0+a1*xx+a2*xx*xx+a3*xx*xx*xx;
+    context.fillStyle = "black";
+    context.fillRect(xx*g_scale, -yy*g_scale, 0.2*g_scale, 0.2*g_scale);
+    }
+    while (xx < xmax);
+    // DRAW Polyfit
+    if (xmin2 > -1) {
+      var xx2=xmin2;
+      var yy=0;
+      do {
+      xx2+=step;
+      yy2=a4+a5*xx2+a6*xx2*xx2+a7*xx2*xx2*xx2;
+      context.fillStyle = "black";
+      context.fillRect(xx2*g_scale, -yy2*g_scale, 0.2*g_scale, 0.2*g_scale);
+      }
+      while (xx2 < xmax*2);
+    }
+
+    // DRAW Polyfit
+    if (xmin3 > -1) {
+      var xx3=xmin3;
+      var yy3=0;
+      do {
+      xx3+=step;
+      yy3=a8+a9*xx3+a10*xx3*xx3+a11*xx3*xx3*xx3;
+      context.fillStyle = "black";
+      context.fillRect(xx3*g_scale, -yy3*g_scale, 0.2*g_scale, 0.2*g_scale);
+      }
+      while (xx3 < xmax*3);
+    }
+    if (xmin4 > -1) {
+      // DRAW Polyfit
+      var xx4=xmin4;
+      var yy4=0;
+      do {
+      xx4+=step;
+      yy4=a12+a13*xx4+a14*xx4*xx4+a15*xx4*xx4*xx4;
+      context.fillStyle = "black";
+      context.fillRect(xx4*g_scale, -yy4*g_scale, 0.2*g_scale, 0.2*g_scale);
+      }
+      while (xx4 < xmax*4);
+    }
+    if (pathx1 > 0) {
+      // DRAW end of path
+      context.fillStyle = "black";
+      context.fillRect(pathx1*g_scale, -pathy1*g_scale, 0.4*g_scale, 0.4*g_scale);
+      context.fillRect(pathx2*g_scale, -pathy2*g_scale, 0.4*g_scale, 0.4*g_scale);
+    }
+    //###################
     context.strokeStyle = "black";
 
     context.stroke();
     context.restore();
 
-    context.save();
     // Outputs
     context.fillStyle="black";
     context.font = "20px Courier New";
@@ -196,25 +309,9 @@ function addSimulationViewData(data) {
     context.fillText("Vx: "+Vx.toFixed(2)+" | Vy: "+Vy.toFixed(2)+" | Aim: "+headingRequest.toFixed(2)+" | AxReq: "+AxReq.toFixed(2), 50, canvas.height-30); //*/
     context.fillText("Vx: "+Vx.toFixed(2)+" | Vy: "+Vy.toFixed(2) +" | Ax: "+Ax.toFixed(2) +" | Ay: "+Ay.toFixed(2), 50, canvas.height-60); //
     context.fillText("AxReq: "+AxReq.toFixed(2)+" | Aim: "+headingRequest.toFixed(2), 50, canvas.height-30);
+    context.fillText("a0: "+a0.toFixed(2)+" | a1: "+a1.toFixed(2)+" | a2: "+a2.toFixed(2)+" | a3: "+a3.toFixed(2)+" | xmin: "+xmin1.toFixed(2), 50, canvas.height-90);
     //#####################
-    context.restore();
 
-    /*
-    for (const wallKey in g_walls) {
-      const sx1 = g_scale * g_walls[wallKey][0] - g_scrollX;
-      const sy1 = -g_scale * g_walls[wallKey][1] - g_scrollY;
-      const sx2 = g_scale * g_walls[wallKey][2] - g_scrollX;
-      const sy2 = -g_scale * g_walls[wallKey][3] - g_scrollY;
-
-      context.save();
-      context.beginPath();
-      context.lineWidth = 5;
-      context.moveTo(sx1, sy1);
-      context.lineTo(sx2, sy2);
-      context.stroke();
-      context.restore();
-    }
-    */
     for (const wallKey in g_walls) {
       const sx1 = g_scaleSim * g_walls[wallKey][0] - g_scrollXSim;
       const sy1 = -g_scaleSim * g_walls[wallKey][1] - g_scrollYSim;
@@ -239,10 +336,25 @@ function addSimulationViewData(data) {
         context.fillStyle = "#ff9000";
         coneSize = 10;//0.3*g_scale;
       }
-      context.save();
       context.fillRect(sx1, sy1, coneSize, coneSize);
       context.stroke();
-      context.restore();
     }
   }
 }
+
+/*
+for (const wallKey in g_walls) {
+  const sx1 = g_scale * g_walls[wallKey][0] - g_scrollX;
+  const sy1 = -g_scale * g_walls[wallKey][1] - g_scrollY;
+  const sx2 = g_scale * g_walls[wallKey][2] - g_scrollX;
+  const sy2 = -g_scale * g_walls[wallKey][3] - g_scrollY;
+
+  context.save();
+  context.beginPath();
+  context.lineWidth = 5;
+  context.moveTo(sx1, sy1);
+  context.lineTo(sx2, sy2);
+  context.stroke();
+  context.restore();
+}
+*/
